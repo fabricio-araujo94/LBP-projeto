@@ -32,7 +32,7 @@ unsigned char tahNaPonta(unsigned char *, int , unsigned char *);
 int main(void){
 	struct pgm img;
 	struct pgm lpb;
-    char nome[TAM_N];
+    	char nome[TAM_N];
 
 	/*if (argc!=2){
 		printf("Formato: \n\t %s <endereço das imagens> \n",argv[0]);
@@ -48,28 +48,28 @@ int main(void){
 	
 	struct dirent *dent;
 	
-    int i = 0;
+    	int i = 0;
 
-    // A função readdir irá ler todos os arquivos do diretório
-    while((dent = readdir(dir)) != NULL){
-        // É necessário uma string para armazenar o endereço das imagens
-        strcpy(nome,"./datasets/oncotex_pgm/");
+    	// A função readdir irá ler todos os arquivos do diretório
+	while((dent = readdir(dir)) != NULL){
+        	// É necessário uma string para armazenar o endereço das imagens
+        	strcpy(nome,"./datasets/oncotex_pgm/");
 		strcat(nome, dent->d_name);
 
-        if(i >= 2){ // Os primeiros dois nomes são apenas pontos
-        readPGMImage(&img, nome);
-        LBP(&img, &lpb);
+        	if(i >= 2){ // Os primeiros dois nomes são apenas pontos
+        		readPGMImage(&img, nome);
+        		LBP(&img, &lpb);
 
-        memset(nome, 0, TAM_N); // Apaga a string nome
-        }
+        		memset(nome, 0, TAM_N); // Apaga a string nome
+        	}
     
-        i++;
-    }
+        	i++;
+	}
     
-    //writePGMImage(&lpb, argv[2]);
+	//writePGMImage(&lpb, argv[2]);
 	//viewPGMImage(&lpb);
 
-    closedir(dir);
+    	closedir(dir);
 
 	return 0;
 
