@@ -21,19 +21,19 @@ void LBP(struct pgm *pio, struct pgm *lbp){
             if(i == 0) { // Canto superior esquerdo
                 caso = 0;
                 valoresPonta(pio->pData+i, numeros, pio->c, caso);
-                lbp->pData[i] = tahNaPonta(pio->pData+i, caso, numeros);
+                lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
             } else if ((i + 1) / pio->c == 1) {  // Canto superior direito
                 caso = 1;
                 valoresPonta(pio->pData+i, numeros, pio->c, caso);
-                lbp->pData[i] = tahNaPonta(pio->pData+i, caso, numeros);;
+                lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
             } else if(i + 1 == (pio->r * pio->c) - pio->c) { // Canto inferior esquerdo
                 caso = 2;
                 valoresPonta(pio->pData+i, numeros, pio->c, caso);
-                lbp->pData[i] = tahNaPonta(pio->pData+i, caso, numeros);
+                lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
             } else if(i + 1 == (pio->r * pio->c)) { // Canto inferior direito
                 caso = 3;
                 valoresPonta(pio->pData+i, numeros, pio->c, caso);
-                lbp->pData[i] = tahNaPonta(pio->pData+i, caso, numeros);
+                lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
             }
             
         // Caso o pixel selecionado esteja na beirada da matriz    
@@ -42,24 +42,24 @@ void LBP(struct pgm *pio, struct pgm *lbp){
             if(i - pio->c < 0) { // Parte de cima
                 caso = 0;
                 valoresBeirada(pio->pData+i, numeros, pio->c, caso);
-                lbp->pData[i] = tahNaBeirada(pio->pData+i, caso, numeros);
+                lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
             } else if(i + pio->c > (pio->r * pio->c)) { // Parte de baixo
                 caso = 1;
                 valoresBeirada(pio->pData+i, numeros, pio->c, caso);
-                lbp->pData[i] = tahNaBeirada(pio->pData+i, caso, numeros);
-            } else if((i + 1) % pio->c == 0) { // Lado esquerdo
+                lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
+            } else if(i % pio->c == 0) { // Lado esquerdo
                 caso = 2;
                 valoresBeirada(pio->pData+i, numeros, pio->c, caso);
-                lbp->pData[i] = tahNaBeirada(pio->pData+i, caso, numeros);
-            } else if(i % pio->c == 0) { // Lado direito
+                lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
+            } else if((i + 1) % pio->c == 0) { // Lado direito
                 caso = 3;
                 valoresBeirada(pio->pData+i, numeros, pio->c, caso);
-                lbp->pData[i] = tahNaBeirada(pio->pData+i, caso, numeros);
+                lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
             }
             
         } else{
             valoresMeio(pio->pData, numeros, pio->c);
-            lbp->pData[i] = tahNoMeio(pio->pData+i, numeros);
+            lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
         }
         
         //lbp->pData++;
@@ -135,7 +135,7 @@ void histograma(struct pgm *lbp, unsigned char *hist){
 void CSV(unsigned char *hist, unsigned char rotulo){
     FILE *csv;
     
-    if(!(csv = fopen("Histograma.csv", "a+"))){
+    if(!(csv = fopen("histograma.csv", "a+"))){
         puts("\nErro na criação ou na leitura do arquivo!\n\n");
         exit(2);
     }
