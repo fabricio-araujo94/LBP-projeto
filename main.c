@@ -2,18 +2,19 @@
 #include "lerimagem.h"
 #include "processo.h"
 
-#define QTDIMG 4
+#define MXCHAR 265
+#define QTDIMG 656
 
 int main(void){
 	struct pgm img;
 	struct pgm lbp;
-  char nome[TAM_N];
-  unsigned char *hist;
+  	char nome[TAM_N];
+  	unsigned char *hist;
 
-  int k;
-  clock_t begin, end;
-  double time_per_img, time_total=0;
-  long long int a = 999999999;
+  	int k;
+  	clock_t begin, end;
+  	double time_per_img, time_total=0;
+  	long long int a = 999999999;
 	
 	DIR *dir;
 	
@@ -24,40 +25,42 @@ int main(void){
 	
 	struct dirent *dent;
 	
-  int i = 0;
+  	int i = 0;
 
-  // A função readdir irá ler todos os arquivos do diretório
-  while((dent = readdir(dir)) != NULL){
-    // É necessário uma string para armazenar o endereço das imagens
-    strcpy(nome,"./datasets/oncotex_pgm/");
+  	// A função readdir irá ler todos os arquivos do diretório
+  	while((dent = readdir(dir)) != NULL){
+    		// É necessário uma string para armazenar o endereço das imagens
+    		strcpy(nome,"./datasets/oncotex_pgm/");
 		strcat(nome, dent->d_name);
 
-    hist = calloc(265, sizeof(unsigned char));
+    		hist = calloc(MXCHAR, sizeof(unsigned char));
 
-    if(i >= 2){ // Os primeiros dois nomes são apenas pontos
-      readPGMImage(&img, nome);
+    		if(i >= 2){ // Os primeiros dois nomes são apenas pontos
+      			readPGMImage(&img, nome);
 
-      begin = clock();
+      			begin = clock();
       
-      LBP(&img, &lbp, hist);
-      CSV(hist, dent->d_name[0]);
+      			LBP(&img, &lbp, hist);
 
-      end = clock();
+      			end = clock();
+		
+			CSV(hist, dent->d_name[0]);
 
-      time_per_img = (double)(end - begin) / CLOCKS_PER_SEC;
+			time_per_img = (double)(end - begin) / CLOCKS_PER_SEC;
 
-		  time_total += time_per_img;
+			time_total += time_per_img;
 
-      memset(nome, 0, TAM_N); // Apaga a string nome
-    }
-
-    i++;
+      			memset(nome, 0, TAM_N); // Apaga a string nome
+    		}
+		
+	i++;
   }
-
-  printf("\nTempo médio: %lf\n",time_total/QTDIMG);
+	printf("\nTempo médio: %lf\n",time_total/QTDIMG);
 	printf("Tempo Total: %lf\n",time_total);
+	
+	free(hist);
 
-  closedir(dir);
+	closedir(dir);
 
 	return 0;
 }
