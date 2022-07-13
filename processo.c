@@ -1,15 +1,12 @@
-﻿#include "processo.h"
+#include "processo.h"
 
-void LBP(struct pgm *pio, struct pgm *lbp){
+void LBP(struct pgm *pio, struct pgm *lbp, unsigned char *hist){
     
     lbp->tipo = pio->tipo;
     lbp->r = pio->r;
     lbp->c = pio->c;
     lbp->mv = pio->mv;
     lbp->pData = (unsigned char*) malloc(lbp->r * lbp->c * sizeof(unsigned char));
-    
-    // É necessário encontrar os valores para cada
-    // caso. Sim, isso vai demorar.
     
     int caso;
     unsigned char numeros[TAM];
@@ -62,77 +59,15 @@ void LBP(struct pgm *pio, struct pgm *lbp){
             lbp->pData[i] = calculoLBP(pio->pData+i, numeros);
         }
         
-        //lbp->pData++;
     }
+
+      for(int i = 0; i < pio->r * pio->c; i++){
+        *(hist  + lbp->pData[i]) += 1;
+      }
     
 }
 
-void histograma(struct pgm *lbp, unsigned char *hist){
-    unsigned char numeros[TAM_N] = {'0'};
-    
-    unsigned char aux;
-
-    puts("1");
-    
-    // Ordenação do vetor
-    for(int i = 0; i < (lbp->c * lbp->r); i++) {
-        for(int j = i + 1; j < (lbp->c * lbp->r) - i - 1; j++) { 
-            if (lbp->pData[i] > lbp->pData[j]) {
-                aux = lbp->pData[i];
-                lbp->pData[i] = lbp->pData[j];
-                lbp->pData[j] = aux;
-            }
-        }
-    } 
-
-    puts("2");
-
-    //viewPGMImage(lbp);
-    
-    int k = 0;
-    
-    for(int i = 0; i < (lbp->c * lbp->r); i++){
-        if(i == 0){
-            numeros[k] = lbp->pData[i];
-            k++;
-          } else{
-      
-        for(int j = 0; numeros[j] != '\0'; j++){
-            printf("%huu", numeros[j]);
-            if (*(numeros + j) != lbp->pData[i]){
-                numeros[k] = lbp->pData[i];
-                k++;
-                break;
-            }
-        }
-          }
-    }
-
-    puts("3");
-    
-    int count;
-    k = 0;
-    for(int i = 0; *(numeros + i) != '\0'; i++){
-        count = 0;
-        
-        for(int j = 0; j < (lbp->c * lbp->r); j++){
-            if(*(numeros + i) == lbp->pData[j])
-                count++;
-        }
-        
-        hist[k++] = (unsigned char) count;
-    }
-
-    puts("4");
-    
-    puts("Histograma:");
-    for(int i = 0; i < k; i++)
-        printf("%d ", *(hist + i));
-    
-}
-
-
-void CSV(unsigned char *hist, unsigned char rotulo){
+void CSV(unsigned char *hist, char rotulo){
     FILE *csv;
     
     if(!(csv = fopen("histograma.csv", "a+"))){
@@ -143,7 +78,7 @@ void CSV(unsigned char *hist, unsigned char rotulo){
     for(int i = 0; i < 256; i++)
         fprintf(csv, "%d, ", *(hist + i));
     
-    fprintf(csv, "%huu", rotulo);
+    fprintf(csv, "%d\n", rotulo - 48);
     
     fclose(csv);
 }

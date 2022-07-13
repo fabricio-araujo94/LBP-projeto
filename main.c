@@ -2,16 +2,18 @@
 #include "lerimagem.h"
 #include "processo.h"
 
+#define QTDIMG 4
+
 int main(void){
 	struct pgm img;
 	struct pgm lbp;
   char nome[TAM_N];
-  //unsigned char *hist;
+  unsigned char *hist;
 
-	/*if (argc!=2){
-		printf("Formato: \n\t %s <endereço das imagens> \n",argv[0]);
-		exit(1);
-	} */
+  int k;
+  clock_t begin, end;
+  double time_per_img, time_total=0;
+  long long int a = 999999999;
 	
 	DIR *dir;
 	
@@ -30,24 +32,32 @@ int main(void){
     strcpy(nome,"./datasets/oncotex_pgm/");
 		strcat(nome, dent->d_name);
 
+    hist = calloc(265, sizeof(unsigned char));
+
     if(i >= 2){ // Os primeiros dois nomes são apenas pontos
       readPGMImage(&img, nome);
-      LBP(&img, &lbp);
 
-      //hist = malloc(256 * sizeof(unsigned char));
-      //histograma(&lbp, hist);
+      begin = clock();
+      
+      LBP(&img, &lbp, hist);
+      CSV(hist, dent->d_name[0]);
+
+      end = clock();
+
+      time_per_img = (double)(end - begin) / CLOCKS_PER_SEC;
+
+		  time_total += time_per_img;
 
       memset(nome, 0, TAM_N); // Apaga a string nome
     }
-    
+
     i++;
   }
-    
-  //writePGMImage(&lpb, argv[2]);
-	//viewPGMImage(&lpb);
+
+  printf("\nTempo médio: %lf\n",time_total/QTDIMG);
+	printf("Tempo Total: %lf\n",time_total);
 
   closedir(dir);
 
 	return 0;
-
 }

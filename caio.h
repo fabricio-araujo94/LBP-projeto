@@ -7,6 +7,7 @@
 #include <string.h>
 #include <dirent.h> // Essencial para o diretório
 #include <math.h>
+#include <time.h>
 
 struct pgm{
 	int tipo;
